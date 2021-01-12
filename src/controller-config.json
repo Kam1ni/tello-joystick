@@ -1,0 +1,10 @@
+{
+	"verticalAxis":3,
+	"yawAxis":1,
+	"rollAxis":5,
+	"forwardAxis":7,
+	"takeOffIndex":10,
+	"takeOffBit":0,
+	"landIndex":10,
+	"landBit":1
+}
