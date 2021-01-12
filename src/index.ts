@@ -17,12 +17,10 @@ function computeDistance(value:number):number {
 	return Math.round(100 / 128 * value);
 }
 
-// eslint-disable-next-line max-lines-per-function
-async function main(){
+async function selectDevice():Promise<IXinputDevice>{
 	let devices = XinputWrapper.list();
 	if (devices.length == 0){
-		console.error("No controllers attached");
-		return;
+		throw new Error("No controllers attached");
 	}
 	const rl = readline.createInterface({
 		input: process.stdin,
@@ -33,8 +31,7 @@ async function main(){
 		console.log(`${i+1}: ${devices[i].product}`);
 	}
 
-	let device:IDeviceListing | null = null;
-	while(!device){
+	while(true){
 		let number = await askDeviceNumber(rl);
 		if (isNaN(number)){
 			console.log("Invalid number");
@@ -48,22 +45,17 @@ async function main(){
 			console.log("Number is to high");
 			continue;
 		}
-		device = devices[number-1];
+		let device = devices[number-1];
+		return XinputWrapper.getDevice(device.vendorId, device.productId);
 	}
+}
 
-	let hid = XinputWrapper.getDevice(device.vendorId, device.productId);
-	hid.onupdate = function(data:IXinputDevice){
-		//process.stdout.write(`\r${JSON.stringify(data)}`);
-	};
 
-	let drone = new Tello();/*{
-		on(data:any, args:any){
+// eslint-disable-next-line max-lines-per-function
+async function main(){
+	let hid = await selectDevice();
 
-		},
-		send(data:string, args?:any){
-			console.log(`Sending: ${data} ${args.x}`);
-		}
-	};*/
+	let drone = new Tello();
 
 	let connected = false;
 	let landedPressed = false;
@@ -71,8 +63,8 @@ async function main(){
 
 	drone.on("connection", ()=>{
 		connected = true;
-		console.log("Connected to drone");
 		drone.send("speed", {value: speed});
+		drone.send("streamoff");
 	});
 
 	drone.on("state", (state:any)=>{
@@ -83,15 +75,9 @@ async function main(){
 		console.log(`Received drone message: ${message}`);
 	});
 
-	drone.on("send", (...data) => {
-		console.log(data);
-	});
 
-	// eslint-disable-next-line max-lines-per-function
 	setInterval(async ()=>{
 		if (!connected) return;
-		process.stdout.write(JSON.stringify(hid));
-
 		if (hid.takeOff){
 			if (!takeOffPressed){
 				drone.send("takeoff");
@@ -100,7 +86,6 @@ async function main(){
 		}else{
 			takeOffPressed = false;
 		}
-
 		if (hid.land){
 			if (!landedPressed){
 				drone.send("land");
@@ -109,38 +94,12 @@ async function main(){
 		}else{
 			landedPressed = false;
 		}
-
 		let vertical = computeDistance(hid.vertical);
 		let yaw = computeDistance(hid.yaw);
 		let roll = computeDistance(hid.roll);
 		let pitch = computeDistance(hid.pitch);
-
-		console.log({a: roll, b: pitch, c: vertical, d: yaw});
+		//process.stdout.write(`\r${JSON.stringify({a: roll, b: pitch, c: vertical, d: yaw})}`);
 		drone.send("rc", {a: roll, b: pitch, c: vertical, d: yaw});
-
-		//if (vertical > 0){
-		//	drone.send("up", {value: vertical});
-		//}else if (vertical < 0){
-		//	drone.send("down", {value: -vertical});
-		//}
-		//
-		//if (yaw > 0){
-		//	drone.send("ccw", {value: yaw});
-		//}else if (yaw < 0){
-		//	drone.send("cw", {value: -yaw});
-		//}
-		//
-		//if (roll > 0){
-		//	drone.send("left", {value: roll});
-		//}else if (roll < 0){
-		//	drone.send("right", {value: -roll});
-		//}
-		//
-		//if (pitch > 0){
-		//	drone.send("forward", {value: pitch});
-		//}else if (pitch < 0){
-		//	drone.send("back", {value: -pitch});
-		//}
 	}, interval);
 }
 
