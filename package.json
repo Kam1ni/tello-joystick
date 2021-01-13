@@ -1,12 +1,16 @@
 {
-	"name": "tello-xinput",
-	"version": "0.0.1",
-	"description": "Tello XInput adaptor",
+	"name": "tello-joystick",
+	"version": "0.1.0",
+	"description": "Controller your Tello drone with a HID device like an XBox controller.",
 	"main": "dist/index.js",
 	"scripts": {
 		"lint": "eslint . --fix --ext ts",
 		"build": "tsc",
 		"start": "node dist/index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Kam1ni/tello-joystick"
 	},
 	"author": "Kamil Krzysztof Kulach",
 	"license": "MIT",
