@@ -4,7 +4,7 @@ interface IControllerConfig {
 	verticalAxis:number;
 	yawAxis:number;
 	rollAxis:number;
-	forwardAxis:number;
+	pitchAxis:number;
 	takeOffIndex:number;
 	takeOffBit:number;
 	landIndex:number;
@@ -48,7 +48,7 @@ export const XinputWrapper = {
 			//process.stdout.write(`\rGot data: ${JSON.stringify(data)}`);
 			let vertical = data.readUInt8(controllerConfig.verticalAxis);
 			let roll = data.readUInt8(controllerConfig.rollAxis);
-			let pitch = data.readUInt8(controllerConfig.forwardAxis);
+			let pitch = data.readUInt8(controllerConfig.pitchAxis);
 			let yaw = data.readUInt8(controllerConfig.yawAxis);
 			let landValue = data.readUInt8(controllerConfig.landIndex);
 			let takeOffValue = data.readUInt8(controllerConfig.takeOffIndex);
