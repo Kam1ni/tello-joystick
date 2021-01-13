@@ -99,7 +99,7 @@ async function main(){
 		let roll = computeDistance(hid.roll);
 		let pitch = computeDistance(hid.pitch);
 		//process.stdout.write(`\r${JSON.stringify({a: roll, b: pitch, c: vertical, d: yaw})}`);
-		drone.send("rc", {a: roll, b: pitch, c: vertical, d: yaw});
+		drone.send("rc", {a: -roll, b: pitch, c: vertical, d: -yaw});
 	}, interval);
 }
 
