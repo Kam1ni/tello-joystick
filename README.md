@@ -1,6 +1,6 @@
 # Tello Joystick
 
-This app lets you control your Tello drone with a HID controller. I tested this with my Trust GXT 545 in XInput mode so I assume it works with Xbox controllers.
+This app lets you control your Tello drone with a HID controller. I tested this with my Trust GXT 545 in XInput mode so I assume it works with Xbox controllers. I also made a version of this in C you can check out [here](https://github.com/Kam1ni/tello-c-joystick). But that's more used as a platform for myself to improve my C skills.
 
 ## Build
 
