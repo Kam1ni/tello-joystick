@@ -64,7 +64,13 @@ async function main(){
 	drone.on("connection", ()=>{
 		connected = true;
 		drone.send("speed", {value: speed});
-		drone.send("streamoff");
+		if (process.argv.indexOf("--stream") != -1){
+			console.log("Running with stream");
+			drone.send("streamon");
+		}else{
+			console.log("Running without stream");
+			drone.send("streamoff");
+		}
 	});
 
 	drone.on("state", (state:any)=>{
